@@ -24,7 +24,7 @@ class CRSFInterface {
   CRSFInterface() {}
   
   //bool readFrame(bool (*callback)());
-  CRSFFrameType decodeFrame(uint8_t* buf, unsigned int len);  // Return frame type
+  CRSFFrameStatus decodeFrame(uint8_t* buf, unsigned int len, CRSFFrameType* type_rtn = nullptr);
   bool getChannels(unsigned int channels[16])const;
   bool getChannel(unsigned int ch, unsigned int& value);
   //bool writeTelemetry(bool (*callback)());
@@ -33,7 +33,7 @@ private:
   unsigned int baud_rate = CRSF_BAUDRATE;
   unsigned int rc_channels[16] = {0};
 
-  bool decodeRCChannels(uint8_t* payload, unsigned int channel_count, unsigned int bits);
+  bool unpackRCChannels(uint8_t* payload, unsigned int channel_count, unsigned int bits);
 };
 
 
@@ -66,6 +66,8 @@ enum CRSFFrameType {
   CRSF_FRAMETYPE_MSP_RESP = 0x7B,  // reply with 58 byte chunked binary
   CRSF_FRAMETYPE_MSP_WRITE = 0x7C,  // write with 8 byte chunked binary (OpenTX outbound telemetry buffer limit)
   CRSF_FRAMETYPE_DISPLAYPORT_CMD = 0x7D, // displayport control command
+  // Error
+  CRSF_FRAMETYPE_ERROR = 0x00,  // Invalid or unsupported frame type, or corrupt data
 };
 
 enum {
@@ -136,7 +138,8 @@ typedef enum {
   CRSF_ADDRESS_CRSF_TRANSMITTER = 0xEE
 };
 
-enum {
+enum CRSFFrameStatus {
+  CRSF_FRAME_VALID = 1,
   CRSF_FRAME_ERROR_ADDRESS = -1,
   CRSF_FRAME_ERROR_PAYLOAD = -2,
   CRSF_FRAME_ERROR_TYPE = -3,

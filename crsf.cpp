@@ -37,7 +37,7 @@ CRSFFrameStatus CRSFInterface::decodeFrame(uint8_t* buf, unsigned int len, CRSFF
       if (payload_size != CRSF_FRAME_RC_CHANNELS_PAYLOAD_SIZE)
         return CRSF_FRAME_ERROR_PAYLOAD;
 
-      if (decodeRCChannels(&buf[3], 16, 11))
+      if (unpackRCChannels(&buf[3], 16, 11))
       {
         *type_rtn = CRSF_FRAMETYPE_RC_CHANNELS_PACKED;
         return CRSF_FRAME_VALID;
