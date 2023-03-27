@@ -24,7 +24,7 @@ class CRSFInterface {
   CRSFInterface() {}
   
   //bool readFrame(bool (*callback)());
-  int decodeFrame(uint8_t* buf, unsigned int len);  // Return frame type
+  CRSFFrameType decodeFrame(uint8_t* buf, unsigned int len);  // Return frame type
   bool getChannels(unsigned int channels[16])const;
   bool getChannel(unsigned int ch, unsigned int& value);
   //bool writeTelemetry(bool (*callback)());
@@ -43,7 +43,7 @@ enum { CRSF_SYNC_BYTE = 0xC8 };
 enum { CRSF_FRAME_SIZE_MAX = 64 }; // 62 bytes frame plus 2 bytes frame header(<length><type>)
 enum { CRSF_PAYLOAD_SIZE_MAX = CRSF_FRAME_SIZE_MAX - 6 };
 
-enum {
+enum CRSFFrameType {
   CRSF_FRAMETYPE_GPS = 0x02,
   CRSF_FRAMETYPE_BATTERY_SENSOR = 0x08,
   CRSF_FRAMETYPE_HEARTBEAT = 0x0B,
