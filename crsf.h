@@ -25,7 +25,7 @@ class CRSFInterface {
   
   //bool readFrame(bool (*callback)());
   CRSFFrameStatus decodeFrame(uint8_t* buf, unsigned int len, CRSFFrameType* type_rtn = nullptr);
-  bool getChannels(unsigned int channels[16])const;
+  bool getChannels(unsigned int (&channels)[16])const;
   bool getChannel(unsigned int ch, unsigned int& value);
   //bool writeTelemetry(bool (*callback)());
 
