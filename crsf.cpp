@@ -88,22 +88,3 @@ bool CRSFInterface::unpackRCChannels(uint8_t* data, unsigned int channel_count, 
 
   return true;
 }
-
-// Connor's version
-// void unpack_channels(uint8_t* data, size_t bits_per_channel, uint16_t* channels, size_t num_channels) {
-//     for (size_t i_ch = 0; i_ch < num_channels; i_ch++) {
-//         channels[i_ch] = 0;
-//         size_t i_bit = i_ch * bits_per_channel;
-//         for (size_t channel_bit = 0; channel_bit < bits_per_channel;) {
-//             size_t read_byte = (i_bit + channel_bit) / 8;
-//             size_t read_byte_bit = (i_bit + channel_bit) % 8;
-//             size_t read_byte_bits = 8 - read_byte_bit;
-//             if (channel_bit + read_byte_bits > bits_per_channel) {
-//                 read_byte_bits = bits_per_channel - channel_bit;
-//             }
-//             uint8_t masked_byte = (data[read_byte] >> (8 - read_byte_bits - read_byte_bit)) & ((1 << read_byte_bits) - 1);
-//             channels[i_ch] |= masked_byte << (bits_per_channel - read_byte_bits - channel_bit);
-//             channel_bit += read_byte_bits;
-//         }
-//     }
-// }
