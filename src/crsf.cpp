@@ -12,7 +12,7 @@ uint8_t crsf_crc(const uint8_t* buf, uint8_t len) {
   return crc;
 }
 
-CRSFFrameStatus CRSFInterface::decodeFrame(uint8_t* buf, unsigned int len, CRSFFrameType* type_rtn = nullptr) {
+CRSFFrameStatus CRSFInterface::decodeFrame(uint8_t* buf, unsigned int len, CRSFFrameType* type_rtn) {
   uint8_t addr = buf[0];
   uint8_t frame_length = buf[1];  // Includes type, but not addr/crc
   uint8_t payload_size = frame_length - 1;

@@ -28,6 +28,7 @@ class CRSFInterface {
   bool getChannels(unsigned int (&channels)[16])const;
   bool getChannel(unsigned int ch, unsigned int& value);
   //bool writeTelemetry(bool (*callback)());
+  unsigned int getBaudRate() { return baud_rate; }
 
 private:
   unsigned int baud_rate = CRSF_BAUDRATE;
