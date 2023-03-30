@@ -15,29 +15,6 @@
 //    <address><frame length><type><payload><crc>
 
 
-// Function declaration
-uint8_t crsf_crc(const uint8_t* buf, uint8_t len);
-
-
-// Class declaration
-class CRSFInterface {
-  CRSFInterface() {}
-  
-  //bool readFrame(bool (*callback)());
-  CRSFFrameStatus decodeFrame(uint8_t* buf, unsigned int len, CRSFFrameType* type_rtn = nullptr);
-  bool getChannels(unsigned int (&channels)[16])const;
-  bool getChannel(unsigned int ch, unsigned int& value);
-  //bool writeTelemetry(bool (*callback)());
-  unsigned int getBaudRate() { return baud_rate; }
-
-private:
-  unsigned int baud_rate = CRSF_BAUDRATE;
-  unsigned int rc_channels[16] = {0};
-
-  bool unpackRCChannels(uint8_t* payload, unsigned int channel_count, unsigned int bits);
-};
-
-
 // enums / globals
 enum { CRSF_SYNC_BYTE = 0xC8 };
 
@@ -164,6 +141,28 @@ static uint8_t crc8_dvbs2[256] = {
   0x20, 0xF5, 0x5F, 0x8A, 0xDE, 0x0B, 0xA1, 0x74, 0x09, 0xDC, 0x76, 0xA3, 0xF7, 0x22, 0x88, 0x5D,
   0xD6, 0x03, 0xA9, 0x7C, 0x28, 0xFD, 0x57, 0x82, 0xFF, 0x2A, 0x80, 0x55, 0x01, 0xD4, 0x7E, 0xAB,
   0x84, 0x51, 0xFB, 0x2E, 0x7A, 0xAF, 0x05, 0xD0, 0xAD, 0x78, 0xD2, 0x07, 0x53, 0x86, 0x2C, 0xF9
+};
+
+// Function declaration
+uint8_t crsf_crc(const uint8_t* buf, uint8_t len);
+
+
+// Class declaration
+class CRSFInterface {
+  CRSFInterface() {}
+  
+  //bool readFrame(bool (*callback)());
+  CRSFFrameStatus decodeFrame(uint8_t* buf, unsigned int len, CRSFFrameType* type_rtn = nullptr);
+  bool getChannels(unsigned int (&channels)[16])const;
+  bool getChannel(unsigned int ch, unsigned int& value);
+  //bool writeTelemetry(bool (*callback)());
+  unsigned int getBaudRate() { return baud_rate; }
+
+private:
+  unsigned int baud_rate = CRSF_BAUDRATE;
+  unsigned int rc_channels[16] = {0};
+
+  bool unpackRCChannels(uint8_t* payload, unsigned int channel_count, unsigned int bits);
 };
 
 #endif
