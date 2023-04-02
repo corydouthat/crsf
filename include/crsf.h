@@ -100,7 +100,7 @@ enum {
 // // Clashes with CRSF_ADDRESS_FLIGHT_CONTROLLER
 // #define CRSF_SYNC_BYTE 0XC8
 
-typedef enum {
+enum {
   CRSF_ADDRESS_BROADCAST = 0x00,
   CRSF_ADDRESS_USB = 0x10,
   CRSF_ADDRESS_TBS_CORE_PNP_PRO = 0x80,
@@ -149,6 +149,7 @@ uint8_t crsf_crc(const uint8_t* buf, uint8_t len);
 
 // Class declaration
 class CRSFInterface {
+public:
   CRSFInterface() {}
   
   //bool readFrame(bool (*callback)());
