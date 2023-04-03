@@ -158,6 +158,7 @@ public:
   bool getChannel(unsigned int ch, unsigned int& value);
   //bool writeTelemetry(bool (*callback)());
   unsigned int getBaudRate() { return baud_rate; }
+  unsigned int getChannelCount() { return 16; }
 
 private:
   unsigned int baud_rate = CRSF_BAUDRATE;
