@@ -5,19 +5,19 @@
 uint8_t crsf_crc(const uint8_t* buf, uint8_t len) {
   uint8_t crc = 0;
 
-  for (uint8_t i = 0; i < len; i++) {
+  for (uint8_t i = 0; i < len - 1; i++) {
     crc = crc8_dvbs2[crc ^ *buf++];
   }
 
   return crc;
 }
 
-CRSFFrameStatus CRSFInterface::decodeFrame(uint8_t* buf, unsigned int len, CRSFFrameType* type_rtn) {
+CRSFFrameStatus CRSFInterface::decodeFrame(uint8_t* buf, unsigned int full_frame_length, CRSFFrameType* type_rtn) {
   uint8_t addr = buf[0];
-  uint8_t frame_length = buf[1];  // Includes type, but not addr/crc
-  uint8_t payload_size = frame_length - 1;
+  uint8_t frame_length = buf[1];  // Includes type+crc, but not addr/len
+  uint8_t payload_size = frame_length - 2;
   uint8_t type = buf[2];
-  uint8_t crc = buf[len - 1];
+  uint8_t crc = buf[full_frame_length - 1];
 
   if (type_rtn)
     *type_rtn = CRSF_FRAMETYPE_ERROR;
@@ -25,11 +25,19 @@ CRSFFrameStatus CRSFInterface::decodeFrame(uint8_t* buf, unsigned int len, CRSFF
   if (addr != 0xC8)
     return CRSF_FRAME_ERROR_ADDRESS;
 
-  if (frame_length < 2 || frame_length + 2 > CRSF_FRAME_SIZE_MAX || frame_length != len - 2)
+  if (frame_length < 5 || full_frame_length > CRSF_FRAME_SIZE_MAX || frame_length != full_frame_length - 2) {
+    printf("CRSF Decode ERROR: payload/frame size\n");
+    // printf("full_frame_length = %u\n", full_frame_length);
+    // printf("frame_length = %u\n", frame_length);
+    // printf("payload_size = %u\n", payload_size);
+    // printf("last byte: %u", buf[full_frame_length - 1]);
     return CRSF_FRAME_ERROR_PAYLOAD;
+  }
 
-  if (crsf_crc(&buf[2], frame_length) != crc)
+  if (crsf_crc(&buf[2], frame_length) != crc) {
+    printf("CRSF Decode ERROR: payload CRC\n");
     return CRSF_FRAME_ERROR_PAYLOAD;
+  }
 
   switch (type) {
     case CRSF_FRAMETYPE_RC_CHANNELS_PACKED:

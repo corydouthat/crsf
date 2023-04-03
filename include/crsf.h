@@ -4,6 +4,7 @@
 #define CRSF_H
 
 #include <cstdint>
+#include <cstdio>
 
 #define CRSF_BAUDRATE   420000
 
@@ -13,12 +14,13 @@
 // 1 stop bit
 // Frame format:
 //    <address><frame length><type><payload><crc>
+//    frame length = type + payload + crc
 
 
 // enums / globals
 enum { CRSF_SYNC_BYTE = 0xC8 };
 
-enum { CRSF_FRAME_SIZE_MAX = 64 }; // 62 bytes frame plus 2 bytes frame header(<length><type>)
+enum { CRSF_FRAME_SIZE_MAX = 64 }; // 62 bytes total payload plus 2 bytes frame header(<addr><len>)
 enum { CRSF_PAYLOAD_SIZE_MAX = CRSF_FRAME_SIZE_MAX - 6 };
 
 enum CRSFFrameType {
@@ -116,7 +118,7 @@ enum {
   CRSF_ADDRESS_CRSF_TRANSMITTER = 0xEE
 };
 
-enum CRSFFrameStatus {
+enum CRSFFrameStatus : int8_t {
   CRSF_FRAME_VALID = 1,
   CRSF_FRAME_ERROR_ADDRESS = -1,
   CRSF_FRAME_ERROR_PAYLOAD = -2,
