@@ -45,7 +45,8 @@ CRSFFrameStatus CRSFInterface::decodeFrame(uint8_t* buf, unsigned int full_frame
       if (payload_size != CRSF_FRAME_RC_CHANNELS_PAYLOAD_SIZE)
         return CRSF_FRAME_ERROR_PAYLOAD;
 
-      if (unpackRCChannels(&buf[3], 16, 11))
+      //printf("Calling unpackRCChannels from decodeFrame\n");
+      if (unpackRCChannels(&buf[3], CRSF_CHANNEL_COUNT, CRSF_PACKED_BITS))
       {
         *type_rtn = CRSF_FRAMETYPE_RC_CHANNELS_PACKED;
         return CRSF_FRAME_VALID;
@@ -61,10 +62,13 @@ CRSFFrameStatus CRSFInterface::decodeFrame(uint8_t* buf, unsigned int full_frame
   }
 }
 
-bool CRSFInterface::getChannels(unsigned int (&channels)[16])const {
+bool CRSFInterface::getChannels(unsigned int* channels, unsigned int count)const {
   // TODO return false if channels not valid
 
-  for (unsigned int i = 0; i < 16; i++)
+  if (count > 16)
+    return false;
+
+  for (unsigned int i = 0; i < count; i++)
     channels[i] = rc_channels[i];
 
   return true;
@@ -113,6 +117,11 @@ bool CRSFInterface::unpackRCChannels(uint8_t* data, unsigned int channel_count, 
     byte_start += bit_start / 8;
     bit_start = bit_start % 8;
   }
+
+  // printf("---------------- BEGIN CRSF UNPACKED CHANNELS ----------------\n");
+  // for (unsigned int i = 0; i < 16; i++)
+  //   printf("Channel %u: %u\n", i, rc_channels[i]);
+  // printf("---------------- END CRSF UNPACKED CHANNELS ----------------\n");
 
   return true;
 }

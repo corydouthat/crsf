@@ -6,7 +6,9 @@
 #include <cstdint>
 #include <cstdio>
 
-#define CRSF_BAUDRATE   420000
+#define CRSF_BAUDRATE       420000
+#define CRSF_CHANNEL_COUNT  16
+#define CRSF_PACKED_BITS    11
 
 // Frame Format:
 // 420k baud default
@@ -156,7 +158,7 @@ public:
   
   //bool readFrame(bool (*callback)());
   CRSFFrameStatus decodeFrame(uint8_t* buf, unsigned int len, CRSFFrameType* type_rtn = nullptr);
-  bool getChannels(unsigned int (&channels)[16])const;
+  bool getChannels(unsigned int* channels, unsigned int count)const;
   bool getChannel(unsigned int ch, unsigned int& value);
   //bool writeTelemetry(bool (*callback)());
   unsigned int getBaudRate() { return baud_rate; }
