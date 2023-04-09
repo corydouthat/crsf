@@ -68,7 +68,7 @@ CRSFFrameStatus CRSFInterface::decodeFrame(const uint8_t* buf, unsigned int full
 
     default:
       // Currently only supporting RC channels packed
-      printf("CRSF Decode ERROR: unsupported frame type\n");
+      //printf("CRSF Decode ERROR: unsupported frame type\n");
       return CRSF_FRAME_ERROR_TYPE;
   }
 }
