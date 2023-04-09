@@ -5,10 +5,8 @@
 
 #include <cstdint>
 #include <cstdio>
-
-#define CRSF_BAUDRATE       420000
-#define CRSF_CHANNEL_COUNT  16
-#define CRSF_PACKED_BITS    11
+#include <inttypes.h>
+#include <string.h>
 
 // Frame Format:
 // 420k baud default
@@ -18,6 +16,21 @@
 //    <address><frame length><type><payload><crc>
 //    frame length = type + payload + crc
 
+#define CRSF_BAUDRATE       420000
+#define CRSF_CHANNEL_COUNT  16
+#define CRSF_PACKED_BITS    11
+
+#define CRSF_CHANNEL_VALUE_MIN  172 // 987us - actual CRSF min is 0 with E.Limits on
+#define CRSF_CHANNEL_VALUE_1000 191
+#define CRSF_CHANNEL_VALUE_MID  992
+#define CRSF_CHANNEL_VALUE_2000 1792
+#define CRSF_CHANNEL_VALUE_MAX  1811 // 2012us - actual CRSF max is 1984 with E.Limits on
+
+// DEBUGGGING
+extern bool print_bytes_once;
+extern bool print_frame_once;
+extern bool print_crsf_once;
+extern char crsf_debug_buffer[1000];
 
 // enums / globals
 enum { CRSF_SYNC_BYTE = 0xC8 };
@@ -159,7 +172,7 @@ public:
   //bool readFrame(bool (*callback)());
   CRSFFrameStatus decodeFrame(uint8_t* buf, unsigned int len, CRSFFrameType* type_rtn = nullptr);
   bool getChannels(unsigned int* channels, unsigned int count)const;
-  bool getChannel(unsigned int ch, unsigned int& value);
+  bool getChannel(unsigned int ch, unsigned int& value)const;
   //bool writeTelemetry(bool (*callback)());
   unsigned int getBaudRate() { return baud_rate; }
   unsigned int getChannelCount() { return 16; }
