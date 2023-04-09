@@ -26,7 +26,7 @@ uint8_t crsf_crc(const uint8_t* buf, uint8_t len) {
   return crc;
 }
 
-CRSFFrameStatus CRSFInterface::decodeFrame(uint8_t* buf, unsigned int full_frame_length, CRSFFrameType* type_rtn) {
+CRSFFrameStatus CRSFInterface::decodeFrame(const uint8_t* buf, unsigned int full_frame_length, unsigned int current_ms, CRSFFrameType* type_rtn) {
   uint8_t addr = buf[0];
   uint8_t frame_length = buf[1];  // Includes type+crc, but not addr/len
   uint8_t payload_size = frame_length - 2;
@@ -58,6 +58,7 @@ CRSFFrameStatus CRSFInterface::decodeFrame(uint8_t* buf, unsigned int full_frame
       if (unpackRCChannels(&buf[3], CRSF_CHANNEL_COUNT, CRSF_PACKED_BITS))
       {
         *type_rtn = CRSF_FRAMETYPE_RC_CHANNELS_PACKED;
+        last_update_ms = current_ms;
         return CRSF_FRAME_VALID;
       }
       else
@@ -95,7 +96,7 @@ bool CRSFInterface::getChannel(unsigned int ch, unsigned int& value)const {
   return true;
 }
 
-bool CRSFInterface::unpackRCChannels(uint8_t* data, unsigned int channel_count, unsigned int bits) {
+bool CRSFInterface::unpackRCChannels(const uint8_t* data, unsigned int channel_count, unsigned int bits) {
   // TODO: check for valid payload size and number of bits
   
   if (!data)
