@@ -1,11 +1,5 @@
 #include "crsf.h"
 
-bool print_bytes_once = true;
-bool print_frame_once = true;
-bool print_crsf_once = true;
-
-char crsf_debug_buffer[1000];
-
 uint8_t flip_bits(uint8_t byte) {
   uint8_t temp = 0;
   uint8_t mask = 128;
@@ -39,15 +33,6 @@ CRSFFrameStatus CRSFInterface::decodeFrame(uint8_t* buf, unsigned int full_frame
   uint8_t type = buf[2];
   uint8_t crc = buf[full_frame_length - 1];
 
-  if (print_bytes_once) {
-    sprintf(crsf_debug_buffer, "Raw %u bytes:\n", full_frame_length);
-    for (unsigned int i = 0; i < full_frame_length; i++) {
-      sprintf(crsf_debug_buffer + strlen(crsf_debug_buffer), "B%u: %" PRIu8 "\n", i, buf[i]);
-    }
-
-    print_bytes_once = false;
-  }
-
   if (type_rtn)
     *type_rtn = CRSF_FRAMETYPE_ERROR;
 
@@ -56,10 +41,6 @@ CRSFFrameStatus CRSFInterface::decodeFrame(uint8_t* buf, unsigned int full_frame
 
   if (frame_length < 5 || full_frame_length > CRSF_FRAME_SIZE_MAX || frame_length != full_frame_length - 2) {
     printf("CRSF Decode ERROR: payload/frame size\n");
-    // printf("full_frame_length = %u\n", full_frame_length);
-    // printf("frame_length = %u\n", frame_length);
-    // printf("payload_size = %u\n", payload_size);
-    // printf("last byte: %u", buf[full_frame_length - 1]);
     return CRSF_FRAME_ERROR_PAYLOAD;
   }
 
@@ -74,7 +55,6 @@ CRSFFrameStatus CRSFInterface::decodeFrame(uint8_t* buf, unsigned int full_frame
       if (payload_size != CRSF_FRAME_RC_CHANNELS_PAYLOAD_SIZE)
         return CRSF_FRAME_ERROR_PAYLOAD;
 
-      //printf("Calling unpackRCChannels from decodeFrame\n");
       if (unpackRCChannels(&buf[3], CRSF_CHANNEL_COUNT, CRSF_PACKED_BITS))
       {
         *type_rtn = CRSF_FRAMETYPE_RC_CHANNELS_PACKED;
@@ -87,6 +67,7 @@ CRSFFrameStatus CRSFInterface::decodeFrame(uint8_t* buf, unsigned int full_frame
 
     default:
       // Currently only supporting RC channels packed
+      printf("CRSF Decode ERROR: unsupported frame type\n");
       return CRSF_FRAME_ERROR_TYPE;
   }
 }
@@ -167,15 +148,6 @@ bool CRSFInterface::unpackRCChannels(uint8_t* data, unsigned int channel_count, 
   //   byte_start += bit_start / 8;
   //   bit_start = bit_start % 8;
   // }
-
-  if (print_frame_once && !print_bytes_once) {
-    sprintf(crsf_debug_buffer + strlen(crsf_debug_buffer), "---------------- BEGIN CRSF UNPACKED CHANNELS ----------------\n");
-    for (unsigned int i = 0; i < 16; i++)
-      sprintf(crsf_debug_buffer + strlen(crsf_debug_buffer), "Channel %u: %u\n", i, rc_channels[i]);
-    sprintf(crsf_debug_buffer + strlen(crsf_debug_buffer), "---------------- END CRSF UNPACKED CHANNELS ----------------\n");
-
-    print_frame_once = false;
-  }
 
   return true;
 }
