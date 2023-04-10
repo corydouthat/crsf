@@ -171,7 +171,6 @@ public:
   CRSFInterface() {}
   
   CRSFFrameStatus decodeFrame(const uint8_t* buf, unsigned int full_frame_length, unsigned int current_ms, CRSFFrameType* type_rtn = nullptr);
-  bool getChannels(unsigned int* channels, unsigned int count)const;
   bool getChannel(unsigned int ch, unsigned int& value)const;
   //bool writeTelemetry(bool (*callback)());
   unsigned int getBaudRate() { return baud_rate; }

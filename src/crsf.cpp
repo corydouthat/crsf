@@ -73,18 +73,6 @@ CRSFFrameStatus CRSFInterface::decodeFrame(const uint8_t* buf, unsigned int full
   }
 }
 
-bool CRSFInterface::getChannels(unsigned int* channels, unsigned int count)const {
-  // TODO return false if channels not valid
-
-  if (count > 16)
-    return false;
-
-  for (unsigned int i = 0; i < count; i++)
-    channels[i] = rc_channels[i];
-
-  return true;
-}
-
 bool CRSFInterface::getChannel(unsigned int ch, unsigned int& value)const {
   // TODO return false if channels not valid
 
