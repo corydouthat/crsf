@@ -40,12 +40,12 @@ CRSFFrameStatus CRSFInterface::decodeFrame(const uint8_t* buf, unsigned int full
     return CRSF_FRAME_ERROR_ADDRESS;
 
   if (frame_length < 5 || full_frame_length > CRSF_FRAME_SIZE_MAX || frame_length != full_frame_length - 2) {
-    printf("CRSF Decode ERROR: payload/frame size\n");
+    // printf("CRSF Decode ERROR: payload/frame size\n");
     return CRSF_FRAME_ERROR_PAYLOAD;
   }
 
   if (crsf_crc(&buf[2], frame_length) != crc) {
-    printf("CRSF Decode ERROR: payload CRC\n");
+    // printf("CRSF Decode ERROR: payload CRC\n");
     return CRSF_FRAME_ERROR_PAYLOAD;
   }
 
