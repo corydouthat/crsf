@@ -170,17 +170,17 @@ class CRSFInterface {
 public:
   CRSFInterface() {}
   
-  CRSFFrameStatus decodeFrame(const uint8_t* buf, unsigned int full_frame_length, unsigned int current_ms, CRSFFrameType* type_rtn = nullptr);
+  CRSFFrameStatus decodeFrame(const uint8_t* buf, unsigned int full_frame_length, unsigned int current_us, CRSFFrameType* type_rtn = nullptr);
   bool getChannel(unsigned int ch, unsigned int& value)const;
   //bool writeTelemetry(bool (*callback)());
   unsigned int getBaudRate() { return baud_rate; }
   unsigned int getChannelCount() { return CRSF_CHANNEL_COUNT; }
-  unsigned int getLastUpdateMs() { return last_update_ms; }
+  unsigned int getLastUpdateUs() { return last_update_us; }
 
 private:
   unsigned int baud_rate = CRSF_BAUDRATE;
   unsigned int rc_channels[16] = {0};
-  unsigned int last_update_ms = 0;
+  unsigned int last_update_us = 0;
 
   bool unpackRCChannels(const uint8_t* data, unsigned int channel_count, unsigned int bits);
 };
